@@ -153,7 +153,7 @@
 						<div class="box-name" th:text="${skuInfo?.skuName}">
 							华为 HUAWEI Mate 10 6GB+128GB 亮黑色 移动联通电信4G手机 双卡双待
 						</div>
- 
+
 						<div class="box-yuyue">
 							<div class="yuyue-one">
 								 热卖促销中
@@ -262,8 +262,8 @@
 						<div class="box-btns clear">
 							<div class="box-btns-one">
 								<form id="itemForm" action="http://localhost:8084/addToCart" method="post">
-									<input type="text" name="num" id=""  value="1"/>
-									<input type="hidden" name="skuId"  th:value="${skuInfo?.id}" />
+									<input type="hidden" id="skuInfoId" name="skuId"  th:value="${skuInfo?.id}" />
+									<input readonly="readonly" type="text" name="quantity" class="shuliang"  value="1"/>
 
 									<div class="box-btns-one1">
 
@@ -1034,6 +1034,31 @@
 			}
 
         }
+
+        $("#jia").mouseover(function(){
+            $(this).css("cursor","pointer")
+        })
+        $("#jian").mouseover(function(){
+            $(this).css("cursor","pointer")
+        })
+
+        //+
+        $("#jia").click(function(){
+            var add=$(".shuliang").val();
+            add+1;
+            $(".shuliang").val(add)
+        })
+
+        //-
+        $("#jian").click(function(){
+            var jian=$(".shuliang").val();
+            if (jian>1){
+                jian-1;
+			}
+
+            $(".shuliang").val(jian)
+        })
+
 	</script>
 
 </html>

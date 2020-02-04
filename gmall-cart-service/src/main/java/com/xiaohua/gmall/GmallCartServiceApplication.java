@@ -1,9 +1,11 @@
-package com.xiaohua.gmall.cart;
+package com.xiaohua.gmall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
+@MapperScan("com.xiaohua.gmall.cart.mapper")
 public class GmallCartServiceApplication {
 
 	public static void main(String[] args) {
