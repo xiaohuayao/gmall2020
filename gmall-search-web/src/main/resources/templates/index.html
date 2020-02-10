@@ -95,7 +95,8 @@
   					</b>
         <ul>
           <li>
-            <a href="/登录页面\index.html">你好，请登录</a>
+            <a th:if="${nickname}!=null" th:text="${nickname}+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+退出"></a>
+            <a th:if="${nickname}==null" href="http://localhost:8085/index?ReturnUrl=http://localhost:8083/index">你好，请登录</a>
           </li>
           <li>
             <a href="/注册页面\index.html" class="li_2">免费注册</a>
@@ -120,7 +121,7 @@
       <div class="header_ico">
         <div class="header_gw">
           <img src="/index/img/img_15.png" />
-          <span><a href="/购物车\One_JDshop.html">我的购物车</a></span>
+          <span><a href="http://localhost:8084/cartList">我的购物车</a></span>
           <span>0</span>
         </div>
         <div class="header_ko">

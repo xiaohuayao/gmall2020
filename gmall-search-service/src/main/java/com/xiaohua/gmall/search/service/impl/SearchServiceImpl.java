@@ -52,7 +52,6 @@ public class SearchServiceImpl implements SearchService {
             pmsSearchSkuInfos.add(source);
         }
 
-        System.out.println(pmsSearchSkuInfos.size());
         return pmsSearchSkuInfos;
     }
 

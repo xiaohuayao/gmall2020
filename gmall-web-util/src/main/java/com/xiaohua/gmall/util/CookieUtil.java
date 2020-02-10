@@ -49,7 +49,7 @@ public class CookieUtil {
      * @param cookieMaxage
      * @param isEncode
      */
-    public static   void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue, int cookieMaxage, boolean isEncode) {
+    public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue, int cookieMaxage, boolean isEncode) {
         try {
             if (cookieValue == null) {
                 cookieValue = "";
@@ -99,7 +99,6 @@ public class CookieUtil {
             String[] ary = domainName.split("\\:");
             domainName = ary[0];
         }
-        System.out.println("domainName = " + domainName);
         return domainName;
     }
     /***

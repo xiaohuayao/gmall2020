@@ -36,7 +36,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addCart(OmsCartItem omsCartItem) {
-        System.out.println(omsCartItem.getQuantity());
         if (StringUtils.isNotBlank(omsCartItem.getMemberId())) {
             omsCartItemMapper.insertSelective(omsCartItem);//避免添加空值
         }
@@ -68,7 +67,9 @@ public class CartServiceImpl implements CartService {
         }
 
         jedis.del("user:"+memberId+":cart");
-        jedis.hmset("user:"+memberId+":cart",map);
+        if(map.size()!=0){
+            jedis.hmset("user:"+memberId+":cart",map);
+        }
 
         jedis.close();
     }
@@ -110,5 +111,14 @@ public class CartServiceImpl implements CartService {
 
         // 缓存同步
         flushCartCache(omsCartItem.getMemberId());
+    }
+
+    @Override
+    public void delCart(String cartId,String memberId) {
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setId(cartId);
+        omsCartItemMapper.delete(omsCartItem);
+        // 缓存同步
+        flushCartCache(memberId);
     }
 }

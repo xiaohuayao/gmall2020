@@ -2,6 +2,7 @@ package com.xiaohua.gmall.item.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.xiaohua.gmall.annotations.LoginRequired;
 import com.xiaohua.gmall.bean.PmsProductSaleAttr;
 import com.xiaohua.gmall.bean.PmsSkuInfo;
 import com.xiaohua.gmall.bean.PmsSkuSaleAttrValue;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +42,8 @@ public class ItemController {
     }
 
     @RequestMapping("{skuId}.html")
-    public String item(@PathVariable String skuId,Model m){
+    @LoginRequired(loginSuccess = false)
+    public String item(@PathVariable String skuId, Model m, HttpServletRequest request){
         PmsSkuInfo pmsSkuInfo = skuService.getSkuById(skuId);
         //sku对象
         m.addAttribute("skuInfo",pmsSkuInfo);

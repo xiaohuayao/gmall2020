@@ -1,14 +1,20 @@
 package com.xiaohua.gmall.search.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.xiaohua.gmall.annotations.LoginRequired;
 import com.xiaohua.gmall.bean.*;
 import com.xiaohua.gmall.service.AttrService;
 import com.xiaohua.gmall.service.SearchService;
+import com.xiaohua.gmall.util.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Controller
@@ -21,11 +27,13 @@ public class SearchController {
     AttrService attrService;
 
     @RequestMapping("index")
-    public String index(){
+    @LoginRequired(loginSuccess = false)
+    public String index() {
         return "index";
     }
 
     @RequestMapping("list.html")
+    @LoginRequired(loginSuccess = false)
     public String list(PmsSearchParam pmsSearchParam, ModelMap modelMap){// 三级分类id、关键字、
 
         // 调用搜索服务，返回搜索结果
@@ -146,5 +154,37 @@ public class SearchController {
         }
 
         return urlParam;
+    }
+
+    @RequestMapping("getIp")
+    @ResponseBody
+    public String getIp(HttpServletRequest request){
+        String ip = request.getHeader("x-forwarded-for");
+        if (StringUtils.isBlank(ip)){
+            /**
+             * apache http服务代理加上的ip
+             */
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ip)){
+            /**
+             * weblogic插件加上的头
+             */
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ip)){
+            /**
+             * 真实ip
+             */
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (StringUtils.isBlank(ip)){
+            /**
+             * 最后真实的ip
+             */
+            ip = request.getRemoteAddr();
+        }
+        System.out.println(ip);
+        return ip;
     }
 }

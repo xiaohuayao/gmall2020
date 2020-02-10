@@ -17,13 +17,15 @@
 
             <ul class="header-left">
                 <li>
-
-                    <a href="">首页</a>
+                    <a href="http://localhost:8083/index">首页</a>
                 </li>
 
             </ul>
             <ul class="header-right">
-                <li><a href="../登录页面\index.html" style="color: red;">你好，请登录</a></li>
+                <li>
+                    <a th:if="${nickname}!=null" th:text="${nickname}+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+退出"></a>
+                    <a th:if="${nickname}==null" href="http://localhost:8085/index?ReturnUrl=http://localhost:8084/cartList" style="color: red;">你好，请登录</a>
+                </li>
                 <li><a href="../注册页面\index.html" >免费注册</a></li>
                 <li class="spacer"></li>
                 <li><a href="">我的订单</a></li>
@@ -44,7 +46,7 @@
     <div class="one_sousuo">
         <div class="one_search_top">
             <div class="one_top_left">
-                <a href="../" class="one_left_logo"><img src="img/logo1.jpg"></a>
+                <a href="#" class="one_left_logo"><img src="img/logo1.jpg"></a>
                 <a href="#" class="one_left_link">购物车</a>
             </div>
             <div class="one_top_right">
@@ -52,9 +54,9 @@
                 <input type="button" value="搜索" class="one_right_btn">
             </div>
         </div>
-        <div class="one_search_load"   th:if="${userId}==null" >
+        <div  class="one_search_load"   th:if="${nickname}==null" >
             <img src="/img/shop_07.jpg" class="one_load_wraing">
-            <span>您还没有登录！登录后购物车的商品将保存到您账号中</span>
+            <span >您还没有登录！登录后购物车的商品将保存到您账号中</span>
             <a href="#"><input type="button" onclick="login()" value="立即登录" class="one_load_btn"></a>
         </div>
     </div>
@@ -169,16 +171,17 @@
 <script src="/js/index.js" charset="utf-8"></script>
 <script type="text/javascript">
 
-     function toTrade(){
-         window.location.href="http://cart.gmall.com:8087/toTrade";
+    function toTrade(){
+         window.location.href="http://localhost:8086/toTrade";
     }
+
     function toItem(skuId) {
-        window.location.href="http://item.gmall.com:8084/"+skuId+".html";
+        window.location.href="http://localhost:8082/"+skuId+".html";
     }
 
     function login(){
       var s = encodeURIComponent("http://cart.gmall.com:8087/cartList");
-       window.location.href="http://passport.atguigu.com/index?originUrl="+s;
+       window.location.href="http://localhost:8085/index?ReturnUrl=http://localhost:8084/cartList";
     }
 
     function checkSku( chkbox){

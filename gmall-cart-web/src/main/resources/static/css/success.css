@@ -94,6 +94,7 @@ a {
     .alert-info .hd_wrap_top .hd_wrap_right {
       float: right; }
       .alert-info .hd_wrap_top .hd_wrap_right .forel {
+        width: 200px;
         margin-right: 5px;
         height: 30px; }
         .alert-info .hd_wrap_top .hd_wrap_right .forel .link_login {

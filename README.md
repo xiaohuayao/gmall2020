@@ -13,16 +13,30 @@ gmall-user-service用户服务的service层 8070
 
 gmall-user-web用户服务的web层 8080
 
+
 gmall-manage-service用户服务的service层 8071
  
 gmall-manege-web用户服务的web层 8081
 
+
 gmall-item-web前台的商品详情展示 8082
+
 
 gmall-search-service搜索服务的service层 8073
  
 gmall-search-web搜索服务的web层 8083
 
+
 gmall-cart-service购物车服务的service层 8074
  
 gmall-cart-web购物车服务的web层 8084
+
+ 
+gmall-passport-web购物车服务的web层 8085
+
+
+gmall-order-service订单服务的service层 8076
+
+gmall-order-web订单服务的web层 8086
+
+

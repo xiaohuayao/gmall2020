@@ -57,10 +57,13 @@
 							</li>
 						</ul>
 						<ul class="header_ul_right">
-							<li style="border: 0;"><a href="../登录页面\index.html" class="aa">你好，请登录</a></li>
+
+							<li style="border: 0;">
+								<a th:if="${nickname}!=null" th:text="${nickname}+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+退出"></a>
+								<a th:if="${nickname}==null" th:href="'http://localhost:8085/index?ReturnUrl=http://localhost:8082/'+${skuInfo?.id}+'.html'" class="aa">你好，请登录</a>
+							</li>
 							<li><a href="../注册页面\index.html" style="color: red;">免费注册</a> |</li>
-							<li><a href="javascript:;" class="aa">我的订单</a> |</li>
- 
+							<li><a href="" class="aa">我的订单</a> |</li>
 						</ul>
 					</div>
 				</header>
@@ -69,7 +72,7 @@
 					<div class="nav_top">
 						<div class="nav_top_one"><a href="#"><img src="/img/logo1.jpg"/></a></div>
 						<div class="nav_top_two"><input type="text"/><button>搜索</button></div>
-						<div class="nav_top_three"><a href="../JD_Shop/One_JDshop.html">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
+						<div class="nav_top_three"><a href="http://localhost:8084/cartList">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
 							<div class="nav_top_three_1">
 								<img src="/img/44.png"/>购物车还没有商品，赶紧选购吧！
 							</div>
@@ -223,7 +226,7 @@
 						  
 						<div class="box-attr-3">
 						<br/>
-							<div class="box-attr-2 clear"  th:each="spuSaleAttr:${spuSaleAttrListCheckBySku}">
+							<div class="box-attr-2 clear"  th:each="spuSaleAttr:${spuSaleAttrListCheckBySku} ">
 								<dl>
 									<dt th:text="${spuSaleAttr.saleAttrName}">选择颜色</dt>
 									<dd  th:class="(${saleAttrValue.isChecked}=='1'?'redborder':'')" th:each="saleAttrValue:${spuSaleAttr.spuSaleAttrValueList}">

@@ -2,6 +2,7 @@ package com.xiaohua.gmall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.xiaohua.gmall.annotations.LoginRequired;
 import com.xiaohua.gmall.bean.OmsCartItem;
 import com.xiaohua.gmall.bean.PmsSkuInfo;
 import com.xiaohua.gmall.service.CartService;
@@ -9,7 +10,6 @@ import com.xiaohua.gmall.service.SkuService;
 import com.xiaohua.gmall.util.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +34,13 @@ public class CartController {
     CartService cartService;
 
     @RequestMapping("addToCart")
-    public String addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response, HttpSession session,ModelMap modelMap){
+    @LoginRequired(loginSuccess = false)
+    public ModelAndView addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap){
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
 
         // 调用商品服务查询商品信息
         PmsSkuInfo skuInfo = skuService.getSkuById(skuId);
-        modelMap.put("skuInfo",skuInfo);
 
         // 将商品信息封装成购物车信息
         OmsCartItem omsCartItem = new OmsCartItem();
@@ -57,9 +57,11 @@ public class CartController {
         omsCartItem.setProductSkuCode("11111111111");
         omsCartItem.setProductSkuId(skuId);
         omsCartItem.setQuantity(new BigDecimal(quantity));
+        omsCartItem.setIsChecked("1");
 
         // 判断用户是否登录
-        String memberId = "1";//"1";
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String)request.getAttribute("nickname");
 
         if (StringUtils.isBlank(memberId)) {
             // 用户没有登录
@@ -97,7 +99,7 @@ public class CartController {
             if(omsCartItemFromDb==null){
                 // 该用户没有添加过当前商品
                 omsCartItem.setMemberId(memberId);
-                omsCartItem.setMemberNickname("test小明");
+                omsCartItem.setMemberNickname(nickname);
                 omsCartItem.setQuantity(new BigDecimal(quantity));
                 cartService.addCart(omsCartItem);
 
@@ -111,7 +113,11 @@ public class CartController {
             cartService.flushCartCache(memberId);
         }
 
-        return "redirect:/success.html";
+        ModelAndView mv = new ModelAndView("success");
+        mv.addObject("skuInfo",skuInfo);
+
+        mv.addObject("quantity",quantity);
+        return mv;
     }
 
     private boolean if_cart_exist(List<OmsCartItem> omsCartItems, OmsCartItem omsCartItem) {
@@ -131,10 +137,13 @@ public class CartController {
     }
 
     @RequestMapping("cartList")
+    @LoginRequired(loginSuccess = false)
     public String cartList(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap) {
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-        String memberId = "1";
+
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String)request.getAttribute("nickname");
 
         if(StringUtils.isNotBlank(memberId)){
             // 已经登录查询db
@@ -155,29 +164,56 @@ public class CartController {
         // 被勾选商品的总额
         BigDecimal totalAmount =getTotalAmount(omsCartItems);
         modelMap.put("totalAmount",totalAmount);
-
         return "cartList";
     }
 
     @RequestMapping("checkCart")
+    @LoginRequired(loginSuccess = false)
     public String checkCart(String isChecked,String skuId,HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap) {
 
-        String memberId = "1";
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String)request.getAttribute("nickname");
 
-        // 调用服务，修改状态
-        OmsCartItem omsCartItem = new OmsCartItem();
-        omsCartItem.setMemberId(memberId);
-        omsCartItem.setProductSkuId(skuId);
-        omsCartItem.setIsChecked(isChecked);
-        cartService.checkCart(omsCartItem);
+        if (StringUtils.isBlank(memberId)) {
+            // 用户没有登录
+            // cookie里原有的购物车数据
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            List<OmsCartItem> omsCartItems = new ArrayList<>();
+            omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
 
-        // 将最新的数据从缓存中查出，渲染给内嵌页
-        List<OmsCartItem> omsCartItems = cartService.cartList(memberId);
-        modelMap.put("cartList",omsCartItems);
-        // 被勾选商品的总额
-        BigDecimal totalAmount =getTotalAmount(omsCartItems);
-        modelMap.put("totalAmount",totalAmount);
+            OmsCartItem omsCartItem = new OmsCartItem();
+            omsCartItem.setProductSkuId(skuId);
+            //isCheck赋值，totalPrice赋值
+            for (OmsCartItem cartItem : omsCartItems) {
+                if (cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
+                    cartItem.setIsChecked(isChecked);
+                }
+                cartItem.setTotalPrice(cartItem.getPrice().multiply(cartItem.getQuantity()));
+            }
 
+            // 更新cookie
+            CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 60 * 60 * 72, true);
+
+            modelMap.put("cartList",omsCartItems);
+            // 被勾选商品的总额
+            BigDecimal totalAmount =getTotalAmount(omsCartItems);
+            modelMap.put("totalAmount",totalAmount);
+
+        }else{
+            // 调用服务，修改状态
+            OmsCartItem omsCartItem = new OmsCartItem();
+            omsCartItem.setMemberId(memberId);
+            omsCartItem.setProductSkuId(skuId);
+            omsCartItem.setIsChecked(isChecked);
+            cartService.checkCart(omsCartItem);
+
+            // 将最新的数据从缓存中查出，渲染给内嵌页
+            List<OmsCartItem> omsCartItems = cartService.cartList(memberId);
+            modelMap.put("cartList",omsCartItems);
+            // 被勾选商品的总额
+            BigDecimal totalAmount =getTotalAmount(omsCartItems);
+            modelMap.put("totalAmount",totalAmount);
+        }
         return "cartListInner";
     }
 
