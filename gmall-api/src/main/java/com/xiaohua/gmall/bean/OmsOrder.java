@@ -28,13 +28,13 @@ public class OmsOrder implements Serializable {
     private BigDecimal integrationAmount;
     private BigDecimal couponAmount;
     private BigDecimal discountAmount;
-    private int payType;
-    private int sourceType;
-    private int status;
-    private int orderType;
+    private String payType;
+    private String sourceType;
+    private String status;
+    private String orderType;
     private String deliveryCompany;
     private String deliverySn;
-    private int autoConfirmDay;
+    private String autoConfirmDay;
     private int integration;
     private int growth;
     private String promotionInfo;
@@ -177,35 +177,35 @@ public class OmsOrder implements Serializable {
         this.discountAmount = discountAmount;
     }
 
-    public int getPayType() {
+    public String getPayType() {
         return payType;
     }
 
-    public void setPayType(int payType) {
+    public void setPayType(String payType) {
         this.payType = payType;
     }
 
-    public int getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(int sourceType) {
+    public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getOrderType() {
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public String getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(int orderType) {
+    public void setOrderType(String orderType) {
         this.orderType = orderType;
     }
 
@@ -225,11 +225,11 @@ public class OmsOrder implements Serializable {
         this.deliverySn = deliverySn;
     }
 
-    public int getAutoConfirmDay() {
+    public String getAutoConfirmDay() {
         return autoConfirmDay;
     }
 
-    public void setAutoConfirmDay(int autoConfirmDay) {
+    public void setAutoConfirmDay(String autoConfirmDay) {
         this.autoConfirmDay = autoConfirmDay;
     }
 

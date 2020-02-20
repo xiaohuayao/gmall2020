@@ -109,7 +109,7 @@ public class OrderController {
             // 订单对象
             OmsOrder omsOrder = new OmsOrder();
 
-            omsOrder.setAutoConfirmDay(7);
+            omsOrder.setAutoConfirmDay("7");
             omsOrder.setCreateTime(new Date());
             omsOrder.setDiscountAmount(null);
             //omsOrder.setFreightAmount(); 运费，支付后，在生成物流信息时
@@ -124,7 +124,7 @@ public class OrderController {
 
             omsOrder.setOrderSn(outTradeNo);//外部订单号
             omsOrder.setPayAmount(totalAmount);
-            omsOrder.setOrderType(1);
+            omsOrder.setOrderType("0");
 
             UmsMemberReceiveAddress umsMemberReceiveAddress = userService.getReceiveAddressById(receiveAddressId);
             omsOrder.setReceiverCity(umsMemberReceiveAddress.getCity());
@@ -135,16 +135,17 @@ public class OrderController {
             omsOrder.setReceiverProvince(umsMemberReceiveAddress.getProvince());
             omsOrder.setReceiverRegion(umsMemberReceiveAddress.getRegion());
 
-            // 当前日期加一天，一天后配送
+            // 当前日期加七天，一天后配送
             Calendar c = Calendar.getInstance();
-            c.add(Calendar.DATE,1);
+            c.add(Calendar.DATE,7);
             Date time = c.getTime();
 
             omsOrder.setReceiveTime(time);
-            omsOrder.setSourceType(0);
-            omsOrder.setStatus(0);
-            omsOrder.setOrderType(0);
+            omsOrder.setSourceType("0");
+            omsOrder.setStatus("0");
+            omsOrder.setOrderType("0");
             omsOrder.setTotalAmount(totalAmount);
+            omsOrder.setPayType("0");
 
 
             // 根据用户id获得要购买的商品列表(购物车)，和总价格
